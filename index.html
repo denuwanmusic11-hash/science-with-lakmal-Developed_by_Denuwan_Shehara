@@ -783,22 +783,14 @@ body.has-userbar #swl-welcome { top: 140px; }
 <div id="onboard" role="dialog" aria-modal="true" aria-labelledby="onboardTitle">
   <form class="onboard-card" id="onboardForm" novalidate>
     <h2 id="onboardTitle" class="i18n" data-si="ආයුබෝවන්!" data-en="Welcome!">ආයුබෝවන්!</h2>
-    <p class="sub i18n" data-si="ඔබේ නම සහ ශ්‍රේණිය ඇතුළත් කරන්න." data-en="Enter your name and grade to continue.">ඔබේ නම සහ ශ්‍රේණිය ඇතුළත් කරන්න.</p>
+    <p class="sub i18n" data-si="ඔබේ email සහ password ඇතුළත් කරන්න." data-en="Enter your email and password to continue.">ඔබේ email සහ password ඇතුළත් කරන්න.</p>
     <div class="onboard-field">
-      <label for="obName" class="i18n" data-si="ඔබේ නම" data-en="Your name">ඔබේ නම</label>
-      <input id="obName" name="name" type="text" autocomplete="name" class="i18n" data-si-placeholder="උදා: නිමේෂ පෙරේරා" data-en-placeholder="e.g. Nimesha Perera" placeholder="උදා: නිමේෂ පෙරේරා">
+      <label for="obEmail" class="i18n" data-si="විද්‍යුත් තැපෑල" data-en="Email">විද්‍යුත් තැපෑල</label>
+      <input id="obEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com">
     </div>
     <div class="onboard-field">
-      <label for="obGrade" class="i18n" data-si="ශ්‍රේණිය" data-en="Grade">ශ්‍රේණිය</label>
-      <select id="obGrade" name="grade">
-        <option value="" class="i18n" data-si="ශ්‍රේණිය තෝරන්න" data-en="Select grade">ශ්‍රේණිය තෝරන්න</option>
-        <option value="6">Grade 6</option>
-        <option value="7">Grade 7</option>
-        <option value="8">Grade 8</option>
-        <option value="9">Grade 9</option>
-        <option value="10">Grade 10 (O/L)</option>
-        <option value="11">Grade 11 (O/L)</option>
-      </select>
+      <label for="obPassword" class="i18n" data-si="මුරපදය" data-en="Password">මුරපදය</label>
+      <input id="obPassword" name="password" type="password" autocomplete="current-password" placeholder="••••••••">
     </div>
     <button type="submit" class="onboard-btn i18n" data-si="ඇතුළු වන්න" data-en="Continue">ඇතුළු වන්න</button>
     <div class="onboard-err" id="obError"></div>
@@ -1041,6 +1033,41 @@ body.has-userbar #swl-welcome { top: 140px; }
   <p class="credit">Developed by <b>Denuwan Shehara</b> &nbsp;|&nbsp; @DENU Editz</p>
 </footer>
 
+<script type="module">
+  // This is a separate "module" script only because Firebase's import
+  // syntax requires it. It just sets up Firebase and hands the pieces
+  // we need to the regular script below via window.fb* - the regular
+  // script below stays a classic script so onclick="..." attributes
+  // in the HTML keep working.
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDr8uJmUn8g-BB1BzQtkBpts6Ng7yOAPAg",
+    authDomain: "science-with-lakmal.firebaseapp.com",
+    projectId: "science-with-lakmal",
+    storageBucket: "science-with-lakmal.firebasestorage.app",
+    messagingSenderId: "507509774337",
+    appId: "1:507509774337:web:3c882f09c7c7ded7080800"
+  };
+
+  const fbApp = initializeApp(firebaseConfig);
+  window.fbAuth = getAuth(fbApp);
+  window.fbDb = getFirestore(fbApp);
+  window.fbSignIn = signInWithEmailAndPassword;
+  window.fbOnAuthStateChanged = onAuthStateChanged;
+  window.fbSignOut = signOut;
+  window.fbDoc = doc;
+  window.fbGetDoc = getDoc;
+  window.fbReady = true;
+  window.dispatchEvent(new Event('fb-ready'));
+</script>
+
 <script>
 const WHATSAPP_NUMBER = '94777107191';
 
@@ -1158,8 +1185,19 @@ let initialLang = 'si';
 try { initialLang = localStorage.getItem('swl-lang') || 'si'; } catch (e) {}
 setLang(initialLang);
 
-/* ---------------- Loading screen + onboarding ---------------- */
+/* ---------------- Loading screen + onboarding (Firebase login) ---------------- */
 (function () {
+  // Firebase itself is set up in the <script type="module"> above.
+  // We just wait here until it signals it's ready, then grab the pieces.
+  let auth, db, fbSignIn, fbOnAuthStateChanged, fbSignOut, fbDoc, fbGetDoc;
+  function grabFirebase() {
+    auth = window.fbAuth; db = window.fbDb;
+    fbSignIn = window.fbSignIn; fbOnAuthStateChanged = window.fbOnAuthStateChanged;
+    fbSignOut = window.fbSignOut; fbDoc = window.fbDoc; fbGetDoc = window.fbGetDoc;
+  }
+  if (window.fbReady) { grabFirebase(); } else {
+    window.addEventListener('fb-ready', () => { grabFirebase(); wireAuthListener(); });
+  }
   const loaderEl = document.getElementById('loader');
   const barEl = document.getElementById('loaderBar');
   const pctEl = document.getElementById('loaderPct');
@@ -1170,7 +1208,6 @@ setLang(initialLang);
   const errEl = document.getElementById('obError');
   const welcomeEl = document.getElementById('swl-welcome');
   const welcomeText = document.getElementById('swlWelcomeText');
-  const STORE = 'swl-user';
 
   if (dotsEl) {
     for (let i = 0; i < 22; i++) {
@@ -1206,36 +1243,43 @@ setLang(initialLang);
     if (pct >= 100) { clearInterval(timer); finishLoading(); }
   }, 40);
 
-  function getUser() {
-    try { return JSON.parse(localStorage.getItem(STORE) || 'null'); } catch (e) { return null; }
-  }
+  // We need BOTH the loading bar to finish AND Firebase to tell us
+  // whether someone is already logged in, before deciding what to show.
+  let loadingDone = false;
+  let authChecked = false;
+  let currentUser = null; // { name, email, uid } when logged in + fee is paid
 
   function finishLoading() {
+    loadingDone = true;
     setTimeout(() => {
       if (loaderEl) { loaderEl.classList.add('burst'); loaderEl.classList.add('hidden'); }
-      const user = getUser();
-      if (user && user.name) {
-        setTimeout(() => enterApp(user), 450);
-      } else {
-        setTimeout(showOnboard, 420);
-      }
+      tryProceed();
     }, 320);
+  }
+
+  function tryProceed() {
+    if (!loadingDone || !authChecked) return;
+    if (currentUser) {
+      setTimeout(() => enterApp(currentUser), 450);
+    } else {
+      setTimeout(showOnboard, 420);
+    }
   }
 
   function showOnboard() {
     if (!onboardEl) return;
     onboardEl.classList.add('show');
-    setTimeout(() => { const n = document.getElementById('obName'); if (n) n.focus(); }, 400);
+    setTimeout(() => { const n = document.getElementById('obEmail'); if (n) n.focus(); }, 400);
   }
 
   function showUserBar(user) {
     const bar = document.getElementById('swlUserBar');
     if (!bar || !user || !user.name) return;
-    const en = document.documentElement.lang === 'en';
     const initials = user.name.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
     bar.querySelector('.ub-avatar').textContent = initials;
     bar.querySelector('.ub-name').textContent = user.name;
-    bar.querySelector('.ub-grade').textContent = en ? 'Grade ' + user.grade : user.grade + ' ශ්‍රේණිය';
+    const gradeEl = bar.querySelector('.ub-grade');
+    if (gradeEl) gradeEl.textContent = user.email || '';
     document.body.classList.add('has-userbar');
     requestAnimationFrame(() => bar.classList.add('show'));
   }
@@ -1246,26 +1290,11 @@ setLang(initialLang);
     showUserBar(user);
     if (welcomeEl && welcomeText && user && user.name) {
       const en = document.documentElement.lang === 'en';
-      welcomeText.textContent = en
-        ? 'Welcome, ' + user.name + ' • Grade ' + user.grade
-        : 'ආයුබෝවන්, ' + user.name + ' • ' + user.grade + ' ශ්‍රේණිය';
+      welcomeText.textContent = en ? 'Welcome, ' + user.name : 'ආයුබෝවන්, ' + user.name;
       setTimeout(() => welcomeEl.classList.add('show'), 500);
       setTimeout(() => welcomeEl.classList.remove('show'), 5200);
     }
     if (typeof observeReveals === 'function') observeReveals();
-  }
-
-  const ubEdit = document.getElementById('ubEdit');
-  if (ubEdit) {
-    ubEdit.addEventListener('click', () => {
-      const bar = document.getElementById('swlUserBar');
-      if (bar) { bar.classList.remove('show'); document.body.classList.remove('has-userbar'); }
-      const u = getUser() || {};
-      const n = document.getElementById('obName'); const g = document.getElementById('obGrade');
-      if (n) n.value = u.name || '';
-      if (g) g.value = u.grade || '';
-      showOnboard();
-    });
   }
 
   const ubLogout = document.getElementById('ubLogout');
@@ -1274,41 +1303,102 @@ setLang(initialLang);
       const en = document.documentElement.lang === 'en';
       const ok = window.confirm(en ? 'Log out from this device?' : 'ඔබට ඉවත් වීමට අවශ්‍යද?');
       if (!ok) return;
-      try { localStorage.removeItem(STORE); } catch (err) {}
+      fbSignOut(auth);
       const bar = document.getElementById('swlUserBar');
       if (bar) bar.classList.remove('show');
       document.body.classList.remove('has-userbar');
-      const n = document.getElementById('obName'); const g = document.getElementById('obGrade');
-      if (n) n.value = ''; if (g) g.value = '';
       if (errEl) errEl.textContent = '';
+      currentUser = null;
       setTimeout(showOnboard, 350);
     });
   }
 
   if (formEl) {
-    formEl.addEventListener('submit', (e) => {
+    formEl.addEventListener('submit', async (e) => {
       e.preventDefault();
       const en = document.documentElement.lang === 'en';
-      const name = document.getElementById('obName').value.trim();
-      const grade = document.getElementById('obGrade').value;
-      if (name.length < 2) {
-        errEl.textContent = en ? 'Please enter your name.' : 'කරුණාකර ඔබේ නම ඇතුළත් කරන්න.';
+      const email = document.getElementById('obEmail').value.trim();
+      const password = document.getElementById('obPassword').value;
+      const submitBtn = formEl.querySelector('button[type="submit"]');
+
+      if (!email || !password) {
+        errEl.textContent = en ? 'Please enter email and password.' : 'කරුණාකර email සහ password ඇතුළත් කරන්න.';
         return;
       }
-      if (!grade) {
-        errEl.textContent = en ? 'Please select your grade.' : 'කරුණාකර ශ්‍රේණිය තෝරන්න.';
-        return;
+
+      errEl.textContent = en ? 'Checking...' : 'පරීක්ෂා කරමින්...';
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        // Step 1: verify email + password with Firebase Authentication
+        const cred = await fbSignIn(auth, email, password);
+        const uid = cred.user.uid;
+
+        // Step 2: look up this student's record in Firestore
+        const userSnap = await fbGetDoc(fbDoc(db, 'users', uid));
+        if (!userSnap.exists()) {
+          errEl.textContent = en ? 'No student record found. Contact admin.' : 'Account එකට record එකක් නැහැ. Admin ට කතා කරන්න.';
+          if (submitBtn) submitBtn.disabled = false;
+          return;
+        }
+
+        // Step 3: check the fee hasn't expired
+        const data = userSnap.data();
+        const paidUntil = data.paidUntil ? data.paidUntil.toDate() : null;
+        const now = new Date();
+
+        if (!paidUntil || paidUntil < now) {
+          errEl.textContent = en ? 'Your class fee has expired. Please contact admin to renew.' : 'ඔයාගේ fee එක expire වෙලා. Admin ට කතා කරන්න fee renew කරන්න.';
+          if (submitBtn) submitBtn.disabled = false;
+          return;
+        }
+
+        // All good - let them in
+        errEl.textContent = '';
+        currentUser = { name: data.name || email, email, uid };
+        onboardEl.classList.add('leaving');
+        setTimeout(() => {
+          onboardEl.classList.remove('show', 'leaving');
+          enterApp(currentUser);
+          if (submitBtn) submitBtn.disabled = false;
+        }, 620);
+      } catch (err) {
+        console.error(err);
+        errEl.textContent = en ? 'Login failed. Check email/password.' : 'Login unsuccessful. Email/password check කරන්න.';
+        if (submitBtn) submitBtn.disabled = false;
       }
-      errEl.textContent = '';
-      const user = { name, grade };
-      try { localStorage.setItem(STORE, JSON.stringify(user)); } catch (err) {}
-      onboardEl.classList.add('leaving');
-      setTimeout(() => {
-        onboardEl.classList.remove('show', 'leaving');
-        enterApp(user);
-      }, 620);
     });
   }
+
+  // Runs once on page load, and again whenever login state changes.
+  // Re-checks paidUntil every time so an expired fee locks them out
+  // even if they were logged in from before.
+  function wireAuthListener() {
+    fbOnAuthStateChanged(auth, async (fbUser) => {
+      if (fbUser) {
+        try {
+          const userSnap = await fbGetDoc(fbDoc(db, 'users', fbUser.uid));
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            const paidUntil = data.paidUntil ? data.paidUntil.toDate() : null;
+            currentUser = (paidUntil && paidUntil > new Date())
+              ? { name: data.name || fbUser.email, email: fbUser.email, uid: fbUser.uid }
+              : null;
+          } else {
+            currentUser = null;
+          }
+        } catch (err) {
+          console.error(err);
+          currentUser = null;
+        }
+      } else {
+        currentUser = null;
+      }
+      authChecked = true;
+      tryProceed();
+    });
+  }
+  if (window.fbReady) { wireAuthListener(); }
 })();
 
 /* ---------------- Custom cursor + spark trail ---------------- */
