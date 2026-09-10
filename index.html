@@ -388,6 +388,89 @@ button.btn-secondary { border: 1px solid var(--border); background: transparent;
 }
 .form-success.active { display: block; }
 .form-success .card-icon { margin: 0 auto 1rem; }
+
+/* Register modal — science motifs */
+.modal-science-fx {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.modal-science-fx svg { position: absolute; opacity: 0.16; }
+.sci-atom {
+  top: -18px;
+  right: -16px;
+  width: 130px;
+  height: 130px;
+  color: var(--accent);
+  animation: spin 16s linear infinite;
+}
+.sci-dna {
+  bottom: -22px;
+  left: -16px;
+  width: 90px;
+  height: 140px;
+  color: var(--primary);
+  animation: float 6s ease-in-out infinite;
+}
+.sci-molecule {
+  top: 46%;
+  left: -30px;
+  width: 84px;
+  height: 84px;
+  color: var(--accent);
+  animation: float 7s ease-in-out infinite reverse;
+}
+.sci-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.16;
+  animation-name: sci-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes sci-rise {
+  from { transform: translateY(0) scale(1); opacity: 0.18; }
+  to   { transform: translateY(-220px) scale(1.3); opacity: 0; }
+}
+
+/* Register modal — O/L 2026 countdown */
+.ol-countdown {
+  border: 1px solid var(--border);
+  background: rgba(94,234,212,0.06);
+  border-radius: 1rem;
+  padding: 0.9rem 1rem 1.05rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+.ol-countdown-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.65rem;
+  line-height: 1.3;
+}
+.ol-countdown-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.ol-unit { display: flex; flex-direction: column; align-items: center; min-width: 2.5rem; }
+.ol-num {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--foreground);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.ol-sub { font-size: 0.6rem; color: var(--muted-foreground); margin-top: 0.2rem; }
+.ol-sep { font-size: 1.05rem; font-weight: 700; color: var(--border); transform: translateY(-6px); }
+
 /* ---------- Loading screen ---------- */
 html, body { cursor: none; }
 @media (hover: none) { html, body { cursor: auto; } }
@@ -522,14 +605,140 @@ body.cursor-active #cursor-ring { width: 50px; height: 50px; border-color: var(-
 }
 @keyframes swl-float { to { transform: translateY(-105vh); opacity: 0; } }
 
+
+/* ---------- Sign-in: science animations + O/L countdown (added) ---------- */
+.sci-anim { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.sci-anim > * { position: absolute; }
+#onboard > *:not(.sci-anim) { position: relative; z-index: 1; }
+
+/* Atom with orbiting electrons */
+.sci-atom { width: 190px; height: 190px; top: 8%; left: 6%; opacity: .5; animation: sci-drift 14s ease-in-out infinite; }
+.sci-atom.two { width: 130px; height: 130px; top: auto; bottom: 7%; left: auto; right: 6%; opacity: .38; animation-delay: -6s; }
+.sci-atom .ring {
+  position: absolute; inset: 0; border: 1.5px solid rgba(94,234,212,.45); border-radius: 50%;
+  transform-style: preserve-3d;
+}
+.sci-atom .ring:nth-child(1) { transform: rotate(0deg) skewX(0deg); animation: sci-spin 7s linear infinite; }
+.sci-atom .ring:nth-child(2) { transform: rotate(60deg); animation: sci-spin 9s linear infinite reverse; border-color: rgba(59,130,246,.45); }
+.sci-atom .ring:nth-child(3) { transform: rotate(120deg); animation: sci-spin 11s linear infinite; border-color: rgba(167,139,250,.4); }
+.sci-atom .ring i {
+  position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 12px rgba(94,234,212,.9);
+}
+.sci-atom .nucleus {
+  position: absolute; top: 50%; left: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--accent));
+  box-shadow: 0 0 22px rgba(94,234,212,.8); animation: sci-pulse 2.6s ease-in-out infinite;
+}
+@keyframes sci-spin { to { transform: rotate(360deg); } }
+.sci-atom .ring:nth-child(2) { animation-name: sci-spin2; }
+.sci-atom .ring:nth-child(3) { animation-name: sci-spin3; }
+@keyframes sci-spin2 { from { transform: rotate(60deg); } to { transform: rotate(420deg); } }
+@keyframes sci-spin3 { from { transform: rotate(120deg); } to { transform: rotate(480deg); } }
+@keyframes sci-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+@keyframes sci-drift { 0%,100% { transform: translate(0,0); } 50% { transform: translate(18px,-22px); } }
+
+/* DNA helix */
+.sci-dna { top: 12%; right: 8%; width: 60px; height: 220px; opacity: .45; }
+.sci-dna span {
+  position: absolute; left: 0; width: 100%; height: 6px; display: block;
+  animation: sci-helix 3.2s linear infinite;
+}
+.sci-dna span::before, .sci-dna span::after {
+  content: ""; position: absolute; top: 0; width: 6px; height: 6px; border-radius: 50%;
+}
+.sci-dna span::before { left: 0; background: var(--accent); box-shadow: 0 0 8px rgba(94,234,212,.8); }
+.sci-dna span::after { right: 0; background: var(--primary); box-shadow: 0 0 8px rgba(59,130,246,.8); }
+@keyframes sci-helix { 0%,100% { transform: scaleX(1); } 50% { transform: scaleX(.15); } }
+
+/* Bubbling flask */
+.sci-flask { bottom: 8%; left: 8%; width: 74px; height: 92px; opacity: .5; animation: sci-drift 12s ease-in-out infinite reverse; }
+.sci-flask .body {
+  position: absolute; bottom: 0; left: 50%; margin-left: -33px; width: 66px; height: 62px;
+  border: 2px solid rgba(94,234,212,.6); border-radius: 0 0 34px 34px; overflow: hidden;
+  background: linear-gradient(180deg, transparent 35%, rgba(94,234,212,.22) 35%);
+}
+.sci-flask .neck { position: absolute; top: 0; left: 50%; margin-left: -9px; width: 18px; height: 34px; border-left: 2px solid rgba(94,234,212,.6); border-right: 2px solid rgba(94,234,212,.6); }
+.sci-flask .body b {
+  position: absolute; bottom: 4px; width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(94,234,212,.85); animation: sci-bubble 2.4s ease-in infinite;
+}
+.sci-flask .body b:nth-child(1) { left: 14px; animation-delay: 0s; }
+.sci-flask .body b:nth-child(2) { left: 30px; animation-delay: .7s; }
+.sci-flask .body b:nth-child(3) { left: 44px; animation-delay: 1.4s; }
+@keyframes sci-bubble { 0% { transform: translateY(0) scale(.6); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(-40px) scale(1.1); opacity: 0; } }
+
+/* Floating science symbols */
+.sci-sym { color: rgba(94,234,212,.32); font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 1.05rem;
+  animation: sci-float-up linear infinite; bottom: -40px; }
+@keyframes sci-float-up { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 12% { opacity: .9; } 100% { transform: translateY(-108vh) rotate(220deg); opacity: 0; } }
+
+/* Orbit particles */
+.sci-orbit { top: 50%; left: 50%; width: 520px; height: 520px; margin: -260px 0 0 -260px;
+  border: 1px dashed rgba(94,234,212,.14); border-radius: 50%; animation: sci-spin 40s linear infinite; }
+.sci-orbit.small { width: 340px; height: 340px; margin: -170px 0 0 -170px; animation-duration: 26s; animation-direction: reverse; border-color: rgba(59,130,246,.14); }
+.sci-orbit i { position: absolute; top: -3px; left: 50%; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px rgba(94,234,212,.8); }
+
+/* Sign-in countdown */
+.ob-countdown {
+  width: min(460px, 100%); text-align: center; border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(94,234,212,.10), rgba(59,130,246,.06));
+  border-radius: 18px; padding: .9rem 1rem 1rem;
+  animation: swl-card-in .7s .15s cubic-bezier(.2,.8,.2,1) both;
+}
+.ob-countdown .ob-cd-label { margin: 0 0 .6rem; font-size: .8rem; font-weight: 700; color: var(--accent); line-height: 1.35; }
+.ob-cd-grid { display: flex; align-items: center; justify-content: center; gap: .45rem; }
+.ob-cd-unit { display: flex; flex-direction: column; align-items: center; min-width: 3.1rem;
+  border: 1px solid var(--border); border-radius: 12px; padding: .45rem .2rem; background: rgba(15,23,42,.45); }
+.ob-cd-num { font-family: "Space Grotesk", sans-serif; font-size: 1.35rem; font-weight: 700; line-height: 1;
+  font-variant-numeric: tabular-nums; color: var(--foreground); }
+.ob-cd-sub { font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-foreground); margin-top: .28rem; }
+.ob-cd-sep { font-size: 1.1rem; color: var(--accent); opacity: .7; animation: sci-pulse 1s ease-in-out infinite; }
+.ob-cd-date { margin: .6rem 0 0; font-size: .7rem; color: var(--muted-foreground); }
+@media (max-width: 480px) {
+  .sci-atom { width: 130px; height: 130px; }
+  .sci-dna { display: none; }
+  .ob-cd-unit { min-width: 2.6rem; }
+  .ob-cd-num { font-size: 1.1rem; }
+}
+
 /* ---------- Onboarding ---------- */
 #onboard {
   position: fixed; inset: 0; z-index: 998; display: none;
-  align-items: center; justify-content: center; padding: 1.25rem;
+  flex-direction: column; gap: 1rem;
+  align-items: center; justify-content: flex-start; padding: 1.25rem;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
   background: radial-gradient(1100px 620px at 50% 20%, #16223f 0%, var(--background) 72%);
   opacity: 0; transition: opacity .6s ease, transform .6s ease, filter .6s ease;
 }
+.registration-banner {
+  width: min(460px, 100%); background: linear-gradient(90deg, rgba(94,234,212,.14), rgba(59,130,246,.14));
+  border: 1px solid var(--accent); border-radius: 16px; padding: 1rem 1.2rem; text-align: center;
+  animation: swl-card-in .6s cubic-bezier(.2,.8,.2,1) both;
+}
+.registration-banner p { margin: 0 0 .65rem; font-weight: 700; color: var(--accent); font-size: .95rem; }
+.registration-btn {
+  display: inline-block; padding: .75rem 1.8rem; border-radius: 12px; font-weight: 700;
+  color: #0b1220; background: linear-gradient(90deg, var(--accent), var(--primary));
+  text-decoration: none; transition: transform .2s ease, box-shadow .2s ease;
+}
+.registration-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -16px rgba(94,234,212,.7); }
+.onboard-watermark {
+  text-align: center; font-size: .78rem; color: var(--muted-foreground); opacity: .85;
+  animation: swl-rise .8s .4s cubic-bezier(.2,.8,.2,1) both, watermark-glow 3s ease-in-out .4s infinite;
+}
+.onboard-watermark b {
+  background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent));
+  background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: watermark-shine 3.5s linear infinite;
+}
+@keyframes watermark-glow { 0%, 100% { opacity: .65; } 50% { opacity: 1; } }
+@keyframes watermark-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 #onboard.show { display: flex; opacity: 1; }
+#onboard > .sci-anim { position: fixed; }
+#onboard::before { content: ""; margin-top: auto; }
+#onboard::after { content: ""; margin-bottom: auto; }
+.onboard-card { flex: none; }
 #onboard.leaving { opacity: 0; transform: scale(1.04); filter: blur(6px); pointer-events: none; }
 .onboard-card {
   width: min(460px, 100%); background: var(--card); border: 1px solid var(--border);
@@ -781,6 +990,58 @@ body.has-userbar #swl-welcome { top: 140px; }
 </div>
 
 <div id="onboard" role="dialog" aria-modal="true" aria-labelledby="onboardTitle">
+  <div class="sci-anim" aria-hidden="true">
+    <div class="sci-orbit"><i></i></div>
+    <div class="sci-orbit small"><i></i></div>
+    <div class="sci-atom">
+      <div class="ring"><i></i></div>
+      <div class="ring"><i></i></div>
+      <div class="ring"><i></i></div>
+      <div class="nucleus"></div>
+    </div>
+    <div class="sci-atom two">
+      <div class="ring"><i></i></div>
+      <div class="ring"><i></i></div>
+      <div class="ring"><i></i></div>
+      <div class="nucleus"></div>
+    </div>
+    <div class="sci-dna">
+      <span style="top:0px;animation-delay:0s"></span>
+      <span style="top:20px;animation-delay:-.4s"></span>
+      <span style="top:40px;animation-delay:-.8s"></span>
+      <span style="top:60px;animation-delay:-1.2s"></span>
+      <span style="top:80px;animation-delay:-1.6s"></span>
+      <span style="top:100px;animation-delay:-2s"></span>
+      <span style="top:120px;animation-delay:-2.4s"></span>
+      <span style="top:140px;animation-delay:-2.8s"></span>
+      <span style="top:160px;animation-delay:-3.2s"></span>
+      <span style="top:180px;animation-delay:-3.6s"></span>
+    </div>
+    <div class="sci-flask">
+      <div class="neck"></div>
+      <div class="body"><b></b><b></b><b></b></div>
+    </div>
+    <div class="sci-syms" id="sciSyms"></div>
+  </div>
+
+  <div class="ob-countdown" id="obCountdown">
+    <p class="ob-cd-label i18n" data-si="2026 O/L විභාගය පටන් ගන්නට තව&nbsp;·&nbsp;දැන්ම Full Time පටන් ගන්න!" data-en="Time left until the 2026 O/L exam · Start full time now!">2026 O/L විභාගය පටන් ගන්නට තව&nbsp;·&nbsp;දැන්ම Full Time පටන් ගන්න!</p>
+    <div class="ob-cd-grid">
+      <div class="ob-cd-unit"><span class="ob-cd-num" id="obDays">00</span><span class="ob-cd-sub i18n" data-si="දින" data-en="Days">දින</span></div>
+      <span class="ob-cd-sep">:</span>
+      <div class="ob-cd-unit"><span class="ob-cd-num" id="obHours">00</span><span class="ob-cd-sub i18n" data-si="පැය" data-en="Hrs">පැය</span></div>
+      <span class="ob-cd-sep">:</span>
+      <div class="ob-cd-unit"><span class="ob-cd-num" id="obMinutes">00</span><span class="ob-cd-sub i18n" data-si="මිනි" data-en="Min">මිනි</span></div>
+      <span class="ob-cd-sep">:</span>
+      <div class="ob-cd-unit"><span class="ob-cd-num" id="obSeconds">00</span><span class="ob-cd-sub i18n" data-si="තත්" data-en="Sec">තත්</span></div>
+    </div>
+    <p class="ob-cd-date">2026 / December / 08</p>
+  </div>
+
+  <div class="registration-banner">
+    <p class="i18n" data-si="⚠️ ලියාපදිංචි වීම අනිවාර්යයි! පළමුව Register වන්න." data-en="⚠️ Registration is Mandatory! Please register first.">⚠️ ලියාපදිංචි වීම අනිවාර්යයි! පළමුව Register වන්න.</p>
+    <a class="registration-btn i18n" data-si="Registration" data-en="Registration" href="https://docs.google.com/forms/d/e/1FAIpQLSfBa8ou3T_ZHz8THaVRRM4AazAk_HMk6K0_L7slB8A8FS9eyg/viewform?pli=1" target="_blank" rel="noopener">Registration</a>
+  </div>
   <form class="onboard-card" id="onboardForm" novalidate>
     <h2 id="onboardTitle" class="i18n" data-si="ආයුබෝවන්!" data-en="Welcome!">ආයුබෝවන්!</h2>
     <p class="sub i18n" data-si="ඔබේ email සහ password ඇතුළත් කරන්න." data-en="Enter your email and password to continue.">ඔබේ email සහ password ඇතුළත් කරන්න.</p>
@@ -796,6 +1057,7 @@ body.has-userbar #swl-welcome { top: 140px; }
     <div class="onboard-err" id="obError"></div>
     <div class="onboard-foot">Science with Lakmal &nbsp;|&nbsp; @DENU Editz</div>
   </form>
+  <div class="onboard-watermark">Developed by <b>Denuwan Shehara</b> ( DENU Editz )</div>
 </div>
 
 <div id="swl-welcome"><span class="dot"></span><span id="swlWelcomeText"></span></div>
@@ -832,7 +1094,7 @@ body.has-userbar #swl-welcome { top: 140px; }
       <button type="button" class="lang-btn active" data-lang="si" onclick="setLang('si')">සිං</button>
       <button type="button" class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
     </div>
-    <button type="button" class="btn-primary i18n" data-si="Register වන්න" data-en="Register" onclick="openRegisterModal()">Register වන්න</button>
+    <button type="button" class="btn-primary i18n" data-si="Eny Questions" data-en="Register" onclick="openRegisterModal()">Eny Questions</button>
   </nav>
 </header>
 
@@ -846,7 +1108,7 @@ body.has-userbar #swl-welcome { top: 140px; }
         <h1><span class="i18n" data-si="විද්‍යාව" data-en="Learn Science">විද්‍යාව</span> <span class="text-primary i18n" data-si="තේරෙන විදිහට" data-en="the way it clicks">තේරෙන විදිහට</span>, <span class="i18n" data-si="ලේසි විදිහට ඉගෙන ගමු" data-en="the easy way">ලේසි විදිහට ඉගෙන ගමු</span></h1>
         <p class="i18n" data-si="සංකල්ප මතක තියාගන්න එපා — තේරුම් ගමු. සරලව පැහැදිලි කරන පන්ති, පුනරීක්ෂණ නෝට්ස් සහ ගෙදර ඉඳන් නරඹන්න පුළුවන් වීඩියෝ පාඩම්." data-en="Don't just memorize concepts — let's understand them. Simply explained classes, revision notes, and video lessons you can watch from home.">සංකල්ප මතක තියාගන්න එපා — තේරුම් ගමු. සරලව පැහැදිලි කරන පන්ති, පුනරීක්ෂණ නෝට්ස් සහ ගෙදර ඉඳන් නරඹන්න පුළුවන් වීඩියෝ පාඩම්.</p>
         <div class="hero-actions">
-          <button type="button" class="btn-primary i18n" data-si="දැන් Register වන්න" data-en="Register Now" onclick="openRegisterModal()">දැන් Register වන්න</button>
+          <button type="button" class="btn-primary i18n" data-si="More Information" data-en="Register Now" onclick="openRegisterModal()">More Information</button>
           <a class="btn-secondary i18n" data-si="වීඩියෝ බලන්න" data-en="Watch Videos" href="https://www.youtube.com/@sciencewithlakmal" target="_blank" rel="noopener">වීඩියෝ බලන්න</a>
         </div>
         <div class="stats">
@@ -969,9 +1231,56 @@ body.has-userbar #swl-welcome { top: 140px; }
   <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
     <button type="button" class="modal-close" aria-label="Close" onclick="closeRegisterModal()">&times;</button>
 
+    <div class="modal-science-fx" aria-hidden="true">
+      <svg class="sci-atom" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="50" cy="50" rx="42" ry="18" stroke="currentColor" stroke-width="2.5"/>
+        <ellipse cx="50" cy="50" rx="42" ry="18" stroke="currentColor" stroke-width="2.5" transform="rotate(60 50 50)"/>
+        <ellipse cx="50" cy="50" rx="42" ry="18" stroke="currentColor" stroke-width="2.5" transform="rotate(120 50 50)"/>
+        <circle cx="50" cy="50" r="6" fill="currentColor"/>
+        <circle cx="92" cy="50" r="3.5" fill="currentColor"/>
+        <circle cx="20" cy="20" r="3.5" fill="currentColor"/>
+        <circle cx="20" cy="80" r="3.5" fill="currentColor"/>
+      </svg>
+      <svg class="sci-dna" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4C12 30 48 30 48 56C48 82 12 82 12 108" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M48 4C48 30 12 30 12 56C12 82 48 82 48 108" stroke="currentColor" stroke-width="2.5"/>
+        <line x1="14" y1="16" x2="46" y2="16" stroke="currentColor" stroke-width="2"/>
+        <line x1="20" y1="30" x2="40" y2="30" stroke="currentColor" stroke-width="2"/>
+        <line x1="14" y1="56" x2="46" y2="56" stroke="currentColor" stroke-width="2"/>
+        <line x1="20" y1="82" x2="40" y2="82" stroke="currentColor" stroke-width="2"/>
+        <line x1="14" y1="96" x2="46" y2="96" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <svg class="sci-molecule" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="30" y1="30" x2="70" y2="30" stroke="currentColor" stroke-width="2"/>
+        <line x1="30" y1="30" x2="30" y2="70" stroke="currentColor" stroke-width="2"/>
+        <line x1="70" y1="30" x2="70" y2="70" stroke="currentColor" stroke-width="2"/>
+        <line x1="30" y1="70" x2="70" y2="70" stroke="currentColor" stroke-width="2"/>
+        <circle cx="30" cy="30" r="7" fill="currentColor"/>
+        <circle cx="70" cy="30" r="7" fill="currentColor"/>
+        <circle cx="30" cy="70" r="7" fill="currentColor"/>
+        <circle cx="70" cy="70" r="7" fill="currentColor"/>
+      </svg>
+      <span class="sci-bubble" style="width:10px;height:10px;left:22%;bottom:8%;animation-duration:5.5s;"></span>
+      <span class="sci-bubble" style="width:6px;height:6px;left:60%;bottom:4%;animation-duration:4.2s;animation-delay:1.1s;"></span>
+      <span class="sci-bubble" style="width:8px;height:8px;left:78%;bottom:12%;animation-duration:6.4s;animation-delay:2s;"></span>
+    </div>
+
     <div id="registerFormWrap">
-      <h2 id="registerTitle" class="i18n" data-si="Register වන්න" data-en="Register">Register වන්න</h2>
+      <h2 id="registerTitle" class="i18n" data-si="Eny Questions" data-en="Register">Eny Questions</h2>
       <p class="i18n" data-si="ඔබේ විස්තර පුරවන්න — අපි WhatsApp හරහා ඔබව සම්බන්ධ කර ගන්නෙමු." data-en="Fill in your details — we'll get in touch with you over WhatsApp.">ඔබේ විස්තර පුරවන්න — අපි WhatsApp හරහා ඔබව සම්බන්ධ කර ගන්නෙමු.</p>
+
+      <div class="ol-countdown" id="olCountdown">
+        <p class="ol-countdown-label i18n" data-si="2026 O/L විභාගය පටන් ගන්නට තව ඇති කාලය" data-en="Time remaining until the 2026 O/L exam begins">2026 O/L විභාගය පටන් ගන්නට තව ඇති කාලය</p>
+        <div class="ol-countdown-grid">
+          <div class="ol-unit"><span class="ol-num" id="olDays">00</span><span class="ol-sub i18n" data-si="දින" data-en="Days">දින</span></div>
+          <span class="ol-sep">:</span>
+          <div class="ol-unit"><span class="ol-num" id="olHours">00</span><span class="ol-sub i18n" data-si="පැය" data-en="Hrs">පැය</span></div>
+          <span class="ol-sep">:</span>
+          <div class="ol-unit"><span class="ol-num" id="olMinutes">00</span><span class="ol-sub i18n" data-si="මිනි" data-en="Min">මිනි</span></div>
+          <span class="ol-sep">:</span>
+          <div class="ol-unit"><span class="ol-num" id="olSeconds">00</span><span class="ol-sub i18n" data-si="තත්" data-en="Sec">තත්</span></div>
+        </div>
+      </div>
 
       <form id="registerForm" onsubmit="submitRegister(event)">
         <div class="form-field">
@@ -992,12 +1301,7 @@ body.has-userbar #swl-welcome { top: 140px; }
         </div>
 
         <div class="form-field">
-          <label for="regPhone" class="i18n" data-si="WhatsApp / දුරකථන අංකය" data-en="WhatsApp / Phone Number">WhatsApp / දුරකථන අංකය</label>
-          <input type="tel" id="regPhone" name="regPhone" placeholder="07XXXXXXXX" required>
-        </div>
-
-        <div class="form-field">
-          <label for="regSubject" class="i18n" data-si="කැමති විෂය (අත්‍යවශ්‍ය නොවේ)" data-en="Preferred Subject (optional)">කැමති විෂය (අත්‍යවශ්‍ය නොවේ)</label>
+          <label for="regSubject" class="i18n" data-si="ඔබට ඇති ප්‍රශ්ණය යොමු කරන්න" data-en="Preferred Subject (optional)">ඔබට ඇති ප්‍රශ්ණය යොමු කරන්න</label>
           <input type="text" id="regSubject" name="regSubject" class="i18n" data-si-placeholder="උදා: Physics, Chemistry, Biology" data-en-placeholder="e.g. Physics, Chemistry, Biology" placeholder="උදා: Physics, Chemistry, Biology">
         </div>
 
@@ -1025,7 +1329,7 @@ body.has-userbar #swl-welcome { top: 140px; }
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3z" stroke="#25d366" stroke-width="1.6"/><path d="M8.5 8.8c.2-.5.5-.5.8-.5h.6c.2 0 .4 0 .6.5.2.5.6 1.5.6 1.6.1.1.1.3 0 .5-.1.2-.2.3-.3.4l-.4.4c-.1.1-.3.3-.1.6.2.4.9 1.4 1.9 2.2 1.3 1.1 2.1 1.3 2.3 1.4.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.5.7c.2.1.4.2.4.4 0 .8-.3 1.6-1.4 1.9-.9.2-1.7.2-3.1-.4-2.6-1.1-4.3-3.7-4.4-3.9-.1-.2-1-1.3-1-2.5 0-1.2.6-1.7.8-2z" fill="#25d366"/></svg>
       <span>WhatsApp</span>
     </a>
-    <a class="social-btn tt" href="https://www.tiktok.com/@sciencewithlakmal" target="_blank" rel="noopener">
+    <a class="social-btn tt" href="https://www.tiktok.com/@lakmaldissanayakescience?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="none"><path d="M14 3v10.2a2.6 2.6 0 1 1-2-2.53" stroke="#5eead4" stroke-width="1.6" stroke-linecap="round"/><path d="M14 3c.3 2 1.8 3.6 4 3.9" stroke="#facc15" stroke-width="1.6" stroke-linecap="round"/></svg>
       <span>TikTok</span>
     </a>
@@ -1110,20 +1414,77 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeRegisterModal();
 });
 
+/* ---------------- O/L 2026 countdown (Dec 08, 2026 — Sri Lanka time) ---------------- */
+const OL_EXAM_TIMESTAMP = new Date('2026-12-08T00:00:00+05:30').getTime();
+
+function setCdValue(name, value) {
+  const ids = { days: ['olDays', 'obDays'], hours: ['olHours', 'obHours'], minutes: ['olMinutes', 'obMinutes'], seconds: ['olSeconds', 'obSeconds'] };
+  ids[name].forEach(function (id) { const el = document.getElementById(id); if (el) el.textContent = value; });
+}
+
+function updateOlCountdown() {
+
+  let diff = OL_EXAM_TIMESTAMP - Date.now();
+
+  if (diff <= 0) {
+    setCdValue('days', '00');
+    setCdValue('hours', '00');
+    setCdValue('minutes', '00');
+    setCdValue('seconds', '00');
+    const label = document.querySelector('#olCountdown .ol-countdown-label');
+    if (label) {
+      label.dataset.si = 'O/L විභාගය ආරම්භ වී ඇත!';
+      label.dataset.en = 'The O/L exam has begun!';
+      label.textContent = (document.documentElement.lang === 'en') ? label.dataset.en : label.dataset.si;
+    }
+    return;
+  }
+
+  const DAY_MS = 1000 * 60 * 60 * 24;
+  const days = Math.floor(diff / DAY_MS); diff -= days * DAY_MS;
+  const HOUR_MS = 1000 * 60 * 60;
+  const hours = Math.floor(diff / HOUR_MS); diff -= hours * HOUR_MS;
+  const MIN_MS = 1000 * 60;
+  const minutes = Math.floor(diff / MIN_MS); diff -= minutes * MIN_MS;
+  const seconds = Math.floor(diff / 1000);
+
+  setCdValue('days', String(days).padStart(2, '0'));
+  setCdValue('hours', String(hours).padStart(2, '0'));
+  setCdValue('minutes', String(minutes).padStart(2, '0'));
+  setCdValue('seconds', String(seconds).padStart(2, '0'));
+}
+
+/* Floating science symbols on the sign-in screen */
+(function buildSciSymbols() {
+  const wrap = document.getElementById('sciSyms');
+  if (!wrap) return;
+  const symbols = ['H₂O', 'CO₂', 'O₂', 'E=mc²', 'NaCl', 'F=ma', '⚛', '🧪', '🔬', 'DNA', 'pH', 'CH₄'];
+  symbols.forEach(function (s, i) {
+    const el = document.createElement('span');
+    el.className = 'sci-sym';
+    el.textContent = s;
+    el.style.left = (3 + (i * 37) % 90) + '%';
+    el.style.animationDuration = (16 + (i * 13) % 14) + 's';
+    el.style.animationDelay = (-(i * 3.7) % 18) + 's';
+    wrap.appendChild(el);
+  });
+})();
+
+updateOlCountdown();
+setInterval(updateOlCountdown, 1000);
+
 function submitRegister(e) {
   e.preventDefault();
   const name = document.getElementById('regName').value.trim();
   const grade = document.getElementById('regGrade').value;
-  const phone = document.getElementById('regPhone').value.trim();
   const subject = document.getElementById('regSubject').value.trim();
 
-  if (!name || !phone) return;
+  if (!name) return;
 
   const lines = [
     'Science with Lakmal - Registration',
     'Name: ' + name,
-    'Grade: ' + grade,
-    'Phone: ' + phone
+    'Grade: ' + grade
   ];
   if (subject) lines.push('Preferred Subject: ' + subject);
 
