@@ -291,6 +291,44 @@ h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1.25rem; }
 .flex-center { display: flex; justify-content: center; }
 
 /* Language toggle */
+/* ---- Notification bell + toast ---- */
+#swlBellBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: rgba(30,41,59,0.6);
+  color: var(--primary);
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: transform 0.25s, background 0.25s;
+}
+#swlBellBtn.show { display: inline-flex; }
+#swlBellBtn:hover { transform: scale(1.08); background: var(--secondary); }
+#swlToast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translate(-50%, 20px);
+  max-width: min(92vw, 28rem);
+  padding: 0.8rem 1.1rem;
+  border-radius: 0.9rem;
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--accent);
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.6);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 99999;
+}
+#swlToast.show { opacity: 1; transform: translate(-50%, 0); }
+#swlToast b { display: block; color: var(--primary); margin-bottom: 2px; }
 .lang-toggle {
   display: flex;
   align-items: center;
@@ -1090,6 +1128,7 @@ body.has-userbar #swl-welcome { top: 140px; }
       <a data-nav="/videos" class="i18n" data-si="වීඩියෝ" data-en="Videos">වීඩියෝ</a>
       <a data-nav="/quiz">Quiz</a>
     </div>
+    <button type="button" id="swlBellBtn" title="Notifications" aria-label="Enable notifications">&#128276;</button>
     <div class="lang-toggle" role="group" aria-label="Language">
       <button type="button" class="lang-btn active" data-lang="si" onclick="setLang('si')">සිං</button>
       <button type="button" class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
@@ -1350,6 +1389,9 @@ body.has-userbar #swl-welcome { top: 140px; }
   import {
     getFirestore, doc, getDoc
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    getMessaging, getToken, onMessage, isSupported
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDr8uJmUn8g-BB1BzQtkBpts6Ng7yOAPAg",
@@ -1368,6 +1410,7 @@ body.has-userbar #swl-welcome { top: 140px; }
   window.fbSignOut = signOut;
   window.fbDoc = doc;
   window.fbGetDoc = getDoc;
+  window.fbMessagingApi = { app: fbApp, getMessaging, getToken, onMessage, isSupported };
   window.fbReady = true;
   window.dispatchEvent(new Event('fb-ready'));
 </script>
@@ -1835,5 +1878,92 @@ setLang(initialLang);
   });
 })();
 </script>
+<div id="swlToast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------------- Push notifications (Firebase Cloud Messaging) ---------------- */
+(function () {
+  // Firebase Console > Project settings > Cloud Messaging > Web Push certificates
+  // > "Generate key pair" ඒකෙන් එන Key pair එක මෙතනට paste කරන්න.
+  const VAPID_KEY = 'PASTE_YOUR_VAPID_KEY_HERE';
+
+  const btn = document.getElementById('swlBellBtn');
+  const toastEl = document.getElementById('swlToast');
+  const configured = VAPID_KEY && VAPID_KEY.indexOf('PASTE_') !== 0;
+  const supported = 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+  if (!btn || !configured || !supported) return; // bell stays hidden
+
+  const T = {
+    ok:     { si: 'දැනුම්දීම් සක්‍රිය කළා! අලුත් පුවත් ඔයාට ලැබෙනවා.', en: 'Notifications enabled! You will get new updates.' },
+    denied: { si: 'දැනුම්දීම් අවහිර කර ඇත. Browser settings වලින් අවසර දෙන්න.', en: 'Notifications are blocked. Please allow them in your browser settings.' },
+    fail:   { si: 'දැනුම්දීම් සක්‍රිය කරන්න බැරි වුණා. පසුව නැවත උත්සාහ කරන්න.', en: 'Could not enable notifications. Please try again later.' },
+    title:  { si: 'දැනුම්දීම් සක්‍රිය කරන්න', en: 'Enable notifications' }
+  };
+  const lang = () => (document.documentElement.lang === 'en' ? 'en' : 'si');
+
+  let toastTimer = null;
+  function toast(title, body) {
+    toastEl.innerHTML = '';
+    if (title) { const b = document.createElement('b'); b.textContent = title; toastEl.appendChild(b); }
+    const t = document.createElement('span'); t.textContent = body || ''; toastEl.appendChild(t);
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 6000);
+  }
+
+  function whenFirebaseReady() {
+    if (window.fbMessagingApi) return Promise.resolve();
+    return new Promise(res => window.addEventListener('fb-ready', () => res(), { once: true }));
+  }
+
+  let listening = false;
+  async function setup() {
+    await whenFirebaseReady();
+    const api = window.fbMessagingApi;
+    if (!(await api.isSupported())) return null;
+    const reg = await navigator.serviceWorker.ready;
+    const messaging = api.getMessaging(api.app);
+    const token = await api.getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+    if (token && !listening) {
+      listening = true;
+      // Page open වෙලා තියෙද්දී එන පණිවිඩ මෙතනින් පෙන්නනවා
+      api.onMessage(messaging, (payload) => {
+        const n = (payload && payload.notification) || {};
+        toast(n.title, n.body);
+      });
+    }
+    return token;
+  }
+
+  async function enable() {
+    try {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { toast('', T.denied[lang()]); return; }
+      const token = await setup();
+      if (token) {
+        console.log('FCM token:', token);
+        btn.classList.remove('show');
+        toast('', T.ok[lang()]);
+      } else {
+        toast('', T.fail[lang()]);
+      }
+    } catch (e) {
+      console.warn('Notification setup failed', e);
+      toast('', T.fail[lang()]);
+    }
+  }
+
+  btn.title = T.title[lang()];
+  btn.addEventListener('click', enable);
+
+  if (Notification.permission === 'granted') {
+    // කලින් අවසර දීලා නම්: bell එක පෙන්නන්නේ නෑ, පණිවිඩ ලබාගන්න නැවත සකසනවා
+    setup().catch(() => {});
+  } else if (Notification.permission !== 'denied') {
+    btn.classList.add('show');
+  }
+})();
+</script>
+
 </body>
 </html>
