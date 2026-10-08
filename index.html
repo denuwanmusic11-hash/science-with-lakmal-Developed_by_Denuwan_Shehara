@@ -1210,6 +1210,89 @@ body { overflow-x: clip; max-width: 100%; }
   #swlHotlineBtn { left: .8rem; bottom: .9rem; width: 3rem; height: 3rem; padding: 0; justify-content: center; font-size: 0; }
   #swlHotlineBtn::before { content: "\1F4DE"; font-size: 1.35rem; }
 }
+
+/* ================= Quiz / XP / Daily challenge ================= */
+.swlg-wrap { margin: 0 0 1.4rem; display: grid; gap: .9rem; }
+.swlg-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.2rem, 1fr)); gap: .6rem; }
+.swlg-chip { padding: .7rem .8rem; border-radius: 1rem; background: rgba(var(--card-rgb),.7); border: 1px solid var(--border); min-width: 0; }
+.swlg-chip small { display: block; font-size: .68rem; color: var(--muted-foreground); margin-bottom: .15rem; }
+.swlg-chip b { font-size: 1.15rem; color: var(--foreground); }
+.swlg-chip b span { color: var(--primary); }
+.swlg-bar { height: .45rem; border-radius: 99px; background: rgba(255,255,255,.1); overflow: hidden; margin-top: .4rem; }
+.swlg-bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--primary)); transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.swlg-badges { display: flex; flex-wrap: wrap; gap: .45rem; }
+.swlg-badge { display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .65rem; border-radius: 99px; font-size: .72rem; border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--muted-foreground); }
+.swlg-badge.on { color: var(--foreground); border-color: var(--primary); background: rgba(var(--primary-rgb),.12); }
+.swlg-badge:not(.on) span { filter: grayscale(1); opacity: .5; }
+.swlg-daily { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1.05rem 1.1rem; border-radius: 1.2rem; border: 1px solid rgba(var(--primary-rgb),.5); background: linear-gradient(135deg, rgba(var(--primary-rgb),.14), rgba(var(--accent-rgb),.1)); }
+.swlg-daily .ico { font-size: 2rem; }
+.swlg-daily .txt { flex: 1 1 12rem; min-width: 0; }
+.swlg-daily h3 { margin: 0 0 .15rem; font-size: 1.02rem; color: var(--foreground); }
+.swlg-daily p { margin: 0; font-size: .82rem; color: var(--muted-foreground); }
+.swlg-btn { font: inherit; font-weight: 800; font-size: .85rem; cursor: pointer; padding: .65rem 1.2rem; border-radius: 99px; border: none; background: var(--primary); color: var(--primary-foreground); transition: transform .2s; }
+.swlg-btn:hover { transform: translateY(-2px); }
+.swlg-btn.ghost { background: transparent; color: var(--foreground); border: 1px solid var(--border); }
+.swlg-start { display: inline-block; margin-top: .6rem; font-size: .8rem; font-weight: 800; color: var(--primary); }
+.swlg-clickable { cursor: pointer; }
+.swlg-clickable:hover { border-color: var(--primary); }
+
+.swlg-home { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: .9rem; margin: 1.2rem 0 1.6rem; }
+.swlg-fact { padding: 1.05rem 1.1rem; border-radius: 1.2rem; background: rgba(var(--card-rgb),.7); border: 1px solid var(--border); }
+.swlg-fact .lbl { font-size: .72rem; font-weight: 800; letter-spacing: .04em; color: var(--accent); margin-bottom: .35rem; }
+.swlg-fact p { margin: 0 0 .7rem; font-size: .92rem; line-height: 1.55; color: var(--foreground); }
+
+#swlQuiz { position: fixed; inset: 0; z-index: 100003; display: flex; align-items: center; justify-content: center; padding: .8rem; background: rgba(0,0,0,.72); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity .25s; }
+#swlQuiz.show { opacity: 1; pointer-events: auto; }
+.swlq-card { position: relative; width: min(100%, 30rem); max-height: 94vh; overflow-y: auto; padding: 1.1rem 1.1rem 1.2rem; border-radius: 1.3rem; background: var(--card); border: 1px solid var(--border); box-shadow: 0 30px 80px -20px rgba(0,0,0,.85); }
+.swlq-x { position: absolute; top: .6rem; right: .7rem; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--border); background: transparent; color: var(--foreground); cursor: pointer; }
+.swlq-head { display: flex; align-items: center; gap: .6rem; font-size: .75rem; font-weight: 800; color: var(--accent); padding-right: 2.4rem; margin-bottom: .6rem; }
+.swlq-head .sp { flex: 1; }
+.swlq-timer { display: none; align-items: center; gap: .6rem; margin-bottom: .7rem; }
+.swlq-timer.on { display: flex; }
+.swlq-timer .track { flex: 1; height: .5rem; border-radius: 99px; background: rgba(255,255,255,.1); overflow: hidden; }
+.swlq-timer .track i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width .25s linear; }
+.swlq-timer b { min-width: 2.2rem; text-align: right; font-size: .85rem; color: var(--primary); }
+.swlq-tag { display: inline-block; font-size: .68rem; font-weight: 800; padding: .15rem .6rem; border-radius: 99px; background: rgba(var(--accent-rgb),.15); color: var(--accent); margin-bottom: .55rem; }
+.swlq-q { font-size: 1.05rem; font-weight: 800; line-height: 1.5; margin-bottom: .8rem; color: var(--foreground); }
+.swlq-opts { display: grid; gap: .5rem; }
+.swlq-opt { text-align: left; font: inherit; font-size: .92rem; padding: .75rem .9rem; border-radius: .9rem; cursor: pointer; color: var(--foreground); background: rgba(255,255,255,.05); border: 1px solid var(--border); transition: background .2s, border-color .2s, transform .15s; }
+.swlq-opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(var(--accent-rgb),.1); }
+.swlq-opt:disabled { cursor: default; }
+.swlq-opt.right { border-color: #22c55e; background: rgba(34,197,94,.18); }
+.swlq-opt.wrong { border-color: #ef4444; background: rgba(239,68,68,.16); animation: swlq-shake .35s; }
+@keyframes swlq-shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.swlq-exp { margin-top: .8rem; padding: .7rem .85rem; border-radius: .9rem; font-size: .82rem; line-height: 1.5; background: rgba(255,255,255,.05); color: var(--muted-foreground); }
+.swlq-exp b { display: block; margin-bottom: .2rem; color: var(--foreground); }
+.swlq-next { margin-top: .9rem; display: flex; justify-content: flex-end; }
+.swlq-res { text-align: center; padding: .4rem 0 .2rem; position: relative; }
+.swlq-res .big { font-size: 3rem; line-height: 1; animation: swlq-pop .6s cubic-bezier(.2,1.4,.4,1); }
+.swlq-res h3 { margin: .5rem 0 .2rem; font-size: 1.25rem; color: var(--foreground); }
+.swlq-res .score { font-size: 2rem; font-weight: 900; color: var(--primary); }
+.swlq-res .xp { margin: .3rem 0 .8rem; font-size: .9rem; color: var(--accent); font-weight: 800; }
+.swlq-res .lvl { margin: .5rem auto; padding: .55rem .9rem; display: inline-block; border-radius: 99px; font-weight: 900; color: var(--primary-foreground); background: linear-gradient(90deg, var(--primary), var(--accent)); animation: swlq-pop .7s .3s cubic-bezier(.2,1.4,.4,1) both; }
+.swlq-res .newb { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; margin: .6rem 0; }
+.swlq-res .acts { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; margin-top: .9rem; }
+@keyframes swlq-pop { 0% { transform: scale(.2); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.swlq-burst { position: absolute; left: 50%; top: 2rem; font-size: 1.3rem; pointer-events: none; animation: swlq-fly 1.4s ease-out forwards; }
+@keyframes swlq-fly { 0% { transform: translate(-50%,0) scale(.4); opacity: 1; } 100% { transform: translate(calc(-50% + var(--dx)), var(--dy)) scale(1.2) rotate(240deg); opacity: 0; } }
+#swlAch { position: fixed; left: 50%; bottom: 5.2rem; transform: translateX(-50%); z-index: 100004; display: grid; gap: .5rem; width: min(92vw, 22rem); pointer-events: none; }
+.swlach-item { display: flex; align-items: center; gap: .7rem; padding: .7rem .9rem; border-radius: 1rem; background: var(--card); border: 1px solid var(--primary); box-shadow: 0 14px 40px -12px rgba(0,0,0,.8); animation: swlach-in .45s cubic-bezier(.2,1.2,.4,1) both; }
+.swlach-item .e { font-size: 1.7rem; }
+.swlach-item small { display: block; font-size: .68rem; color: var(--primary); font-weight: 800; }
+.swlach-item b { font-size: .9rem; color: var(--foreground); }
+.swlach-item.out { animation: swlach-out .4s ease forwards; }
+@keyframes swlach-in { from { transform: translateY(24px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes swlach-out { to { transform: translateY(12px); opacity: 0; } }
+.swl-prof-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; margin: 0 0 .2rem; }
+.swl-prof-stats .swlg-chip { padding: .5rem .3rem; text-align: center; }
+.swl-prof-stats .swlg-chip b { font-size: .95rem; }
+@media (prefers-reduced-motion: reduce) { .swlq-res .big, .swlq-res .lvl, .swlq-burst, .swlach-item { animation: none !important; } }
+
+/* Quiz page on phones: put the game first, the photos after it */
+@media (max-width: 640px) {
+  #page-quiz.active { display: flex; flex-direction: column; }
+  #page-quiz .photo-strip { order: 9; margin-top: 1.5rem; }
+}
 </style>
 <script>
 /* Colour themes */
@@ -1272,7 +1355,7 @@ body { overflow-x: clip; max-width: 100%; }
     <div class="loader-sub">Developed by <b>Denuwan Shehara</b> &nbsp;|&nbsp; @DENU Editz</div>
   </div>
   <div class="loader-bar"><span id="loaderBar"></span></div>
-  <div class="loader-meta"><span id="loaderStatus">Initializing</span><b id="loaderPct">0%</b></div>
+  <div class="loader-meta"><span id="loaderStatus">ආරම්භ වෙමින්...</span><b id="loaderPct">0%</b></div>
   <div class="loader-dots" id="loaderDots" aria-hidden="true"></div>
 </div>
 
@@ -1878,7 +1961,7 @@ setLang(initialLang);
   }
 
   const steps = [
-    { at: 0, si: 'ආරම්භ වෙමින්...', en: 'Initializing' },
+    { at: 0, si: 'ආරම්භ වෙමින්...', en: 'Starting up' },
     { at: 32, si: 'පාඩම් පූරණය වෙමින්...', en: 'Loading lessons' },
     { at: 62, si: 'නෝට්ස් සූදානම් වෙමින්...', en: 'Preparing notes' },
     { at: 88, si: 'සූදානම්!', en: 'Almost ready' }
@@ -2150,6 +2233,7 @@ setLang(initialLang);
       </div>
       <input type="file" id="swlProfFile" accept="image/*" hidden>
     </div>
+    <div class="swl-prof-stats" id="swlProfStats"></div>
     <div class="swl-prof-label" id="swlProfObjLabel"></div>
     <div class="swl-obj-grid" id="swlObjGrid"></div>
     <div class="swl-prof-msg" id="swlProfMsg" role="status"></div>
@@ -2159,6 +2243,388 @@ setLang(initialLang);
 <div id="swlInboxPanel" role="dialog" aria-label="Notifications"><div class="swl-inbox-head"><b id="swlInboxTitle"></b><button type="button" class="swl-inbox-clear" id="swlInboxClear"></button></div><div class="swl-inbox-list" id="swlInboxList"></div></div>
 <div id="swlThemePanel" role="dialog" aria-label="Colours"><div class="swl-theme-title" id="swlThemeTitle"></div><div class="swl-theme-grid" id="swlThemeGrid"></div></div>
 <div id="swlToast" role="status" aria-live="polite"></div>
+
+<script>
+/* Quiz + XP + Levels + Streak + Badges + Daily challenge + Science facts (saved on the student's own device) */
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var lang = function () { return document.documentElement.lang === "en" ? "en" : "si"; };
+  function h(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  var UI = {
+    level:   { si: "මට්ටම", en: "Level" },
+    xp:      { si: "XP ලකුණු", en: "XP points" },
+    streak:  { si: "දින පෙළ", en: "Day streak" },
+    badges:  { si: "ලාංඡන", en: "Badges" },
+    days:    { si: "දින", en: "days" },
+    dTitle:  { si: "දිනපතා විද්‍යා අභියෝගය", en: "Daily Science Challenge" },
+    dDesc:   { si: "ප්‍රශ්න 5ක්, තත්පර 60ක්. අද ප්‍රශ්න සැමට එකයි!", en: "5 questions, 60 seconds. Same questions for everyone today!" },
+    dStart:  { si: "අභියෝගය පටන් ගන්න", en: "Start challenge" },
+    dDone:   { si: "අද සම්පූර්ණයි ✓ නැවත උත්සාහ කරන්න", en: "Done today ✓ Try again" },
+    quick:   { si: "ඉක්මන් Quiz", en: "Quick Quiz" },
+    qStart:  { si: "▶ ආරම්භ කරන්න", en: "▶ Start" },
+    q:       { si: "ප්‍රශ්නය", en: "Question" },
+    next:    { si: "ඊළඟ ප්‍රශ්නය", en: "Next question" },
+    results: { si: "ප්‍රතිඵල බලන්න", en: "See results" },
+    right:   { si: "නිවැරදියි! 🎉", en: "Correct! 🎉" },
+    wrong:   { si: "වැරදියි", en: "Not quite" },
+    again:   { si: "නැවත උත්සාහ කරන්න", en: "Try again" },
+    close:   { si: "වසන්න", en: "Close" },
+    score:   { si: "ලකුණු", en: "Score" },
+    gained:  { si: "ලැබූ XP", en: "XP earned" },
+    timeup:  { si: "කාලය අවසන්!", en: "Time's up!" },
+    lvlup:   { si: "මට්ටම ඉහළ ගියා!", en: "Level up!" },
+    newb:    { si: "නව ලාංඡනය!", en: "New badge!" },
+    great:   { si: "නියමයි!", en: "Great job!" },
+    good:    { si: "හොඳයි!", en: "Good effort!" },
+    keep:    { si: "දිගටම උත්සාහ කරන්න!", en: "Keep going!" },
+    factT:   { si: "💡 ඔබ දන්නවාද?", en: "💡 Did you know?" },
+    another: { si: "තවත් එකක්", en: "Another" },
+    cat:     { phy: { si: "Physics", en: "Physics" }, chem: { si: "Chemistry", en: "Chemistry" }, bio: { si: "Biology", en: "Biology" } },
+    mode:    { quick: { si: "ඉක්මන් Quiz", en: "Quick Quiz" }, daily: { si: "දිනපතා අභියෝගය", en: "Daily Challenge" } },
+    perfect: { si: "සම්පූර්ණ ලකුණු +20", en: "Perfect score +20" },
+    dBonus:  { si: "අද අභියෝගය +25", en: "Daily bonus +25" }
+  };
+
+  var BADGES = [
+    { id: "first",   e: "🎯", si: "පළමු Quiz",           en: "First Quiz" },
+    { id: "perfect", e: "🏆", si: "සම්පූර්ණ ලකුණු",      en: "Perfect Score" },
+    { id: "daily",   e: "🌟", si: "දිනපතා වීරයා",         en: "Daily Hero" },
+    { id: "streak3", e: "🔥", si: "දින 3ක් පෙළට",         en: "3-Day Streak" },
+    { id: "streak7", e: "⚡", si: "දින 7ක් පෙළට",         en: "7-Day Streak" },
+    { id: "master",  e: "🧠", si: "Quiz ප්‍රවීණයා (10)",   en: "Quiz Master (10)" },
+    { id: "lv3",     e: "🚀", si: "මට්ටම 3",              en: "Level 3" },
+    { id: "lv5",     e: "🥇", si: "මට්ටම 5",              en: "Level 5" }
+  ];
+
+  /* ----- Question bank: edit / add freely. a = index of the correct option ----- */
+  var Q = [
+    { c: "phy", q: ["ශබ්දය ගමන් කළ නොහැක්කේ කුමකින්ද?", "Sound cannot travel through which of these?"],
+      o: [["ජලය", "වාතය", "රික්තය", "යකඩ"], ["Water", "Air", "A vacuum", "Iron"]], a: 2,
+      x: ["ශබ්දයට ගමන් කරන්න මාධ්‍යයක් (ඝන, ද්‍රව හෝ වායු) අවශ්‍යයි. රික්තයේ කිසිවක් නැති නිසා ශබ්දය ගමන් නොකරයි.", "Sound needs a medium (solid, liquid or gas). A vacuum has no matter, so sound cannot travel."] },
+    { c: "phy", q: ["බලයේ SI ඒකකය කුමක්ද?", "What is the SI unit of force?"],
+      o: [["ජූල් (J)", "වොට් (W)", "නිව්ටන් (N)", "පැස්කල් (Pa)"], ["Joule (J)", "Watt (W)", "Newton (N)", "Pascal (Pa)"]], a: 2,
+      x: ["බලය මනින්නේ නිව්ටන් (N) වලින්.", "Force is measured in newtons (N)."] },
+    { c: "phy", q: ["වේගය = දුර ÷ ?", "Speed = distance ÷ ?"],
+      o: [["ස්කන්ධය", "කාලය", "බලය", "ත්වරණය"], ["Mass", "Time", "Force", "Acceleration"]], a: 1,
+      x: ["වේගය යනු ඒකක කාලයකදී ගමන් කරන දුරයි: වේගය = දුර ÷ කාලය.", "Speed is distance covered per unit time: speed = distance ÷ time."] },
+    { c: "phy", q: ["විද්‍යුත් ධාරාව මනින ඒකකය කුමක්ද?", "Which unit measures electric current?"],
+      o: [["වෝල්ට් (V)", "ඔම් (Ω)", "ඇම්පියර් (A)", "වොට් (W)"], ["Volt (V)", "Ohm (Ω)", "Ampere (A)", "Watt (W)"]], a: 2,
+      x: ["ධාරාව මනින්නේ ඇම්පියර් (A) වලින්.", "Current is measured in amperes (A)."] },
+    { c: "phy", q: ["පෘථිවි පෘෂ්ඨය ආසන්නයේ ගුරුත්වජ ත්වරණය (g) ආසන්න වශයෙන් කොපමණද?", "Near Earth's surface, the acceleration due to gravity (g) is about:"],
+      o: [["1.6 m/s²", "9.8 m/s²", "24.8 m/s²", "3.7 m/s²"], ["1.6 m/s²", "9.8 m/s²", "24.8 m/s²", "3.7 m/s²"]], a: 1,
+      x: ["පෘථිවිය ළඟ g ≈ 9.8 m/s² (බොහෝ විට 10 ලෙස ගනිති).", "Near Earth g ≈ 9.8 m/s² (often rounded to 10)."] },
+    { c: "phy", q: ["පහත සඳහන් දේවලින් විදුලිය හොඳින් සන්නයනය කරන්නේ කුමක්ද?", "Which of these conducts electricity well?"],
+      o: [["රබර්", "ලී", "කොපර් (තඹ)", "ප්ලාස්ටික්"], ["Rubber", "Wood", "Copper", "Plastic"]], a: 2,
+      x: ["ලෝහ (තඹ වැනි) හොඳ සන්නායක. රබර්, ලී, ප්ලාස්ටික් පරිවාරක.", "Metals such as copper are good conductors. Rubber, wood and plastic are insulators."] },
+    { c: "phy", q: ["ආලෝක වර්ෂයක් මනින්නේ කුමක්ද?", "A light-year measures:"],
+      o: [["කාලය", "දුර", "වේගය", "දීප්තිය"], ["Time", "Distance", "Speed", "Brightness"]], a: 1,
+      x: ["ආලෝක වර්ෂය යනු ආලෝකය වසරක් තුළ ගමන් කරන දුරයි.", "A light-year is the distance light travels in one year."] },
+    { c: "phy", q: ["උෂ්ණත්වය මැනීමට භාවිතා කරන උපකරණය කුමක්ද?", "Which instrument is used to measure temperature?"],
+      o: [["බැරෝමීටරය", "තාපමානය (Thermometer)", "ඇමීටරය", "වෝල්ට්මීටරය"], ["Barometer", "Thermometer", "Ammeter", "Voltmeter"]], a: 1,
+      x: ["උෂ්ණත්වය මනින්නේ තාපමානයකිනි.", "Temperature is measured with a thermometer."] },
+
+    { c: "chem", q: ["ජලයේ රසායනික සූත්‍රය කුමක්ද?", "What is the chemical formula of water?"],
+      o: [["CO₂", "H₂O", "O₂", "NaCl"], ["CO₂", "H₂O", "O₂", "NaCl"]], a: 1,
+      x: ["ජල අණුවක හයිඩ්‍රජන් පරමාණු 2ක් සහ ඔක්සිජන් පරමාණුවක් ඇත: H₂O.", "A water molecule has 2 hydrogen atoms and 1 oxygen atom: H₂O."] },
+    { c: "chem", q: ["සෝඩියම් වල සංකේතය කුමක්ද?", "The chemical symbol for sodium is:"],
+      o: [["So", "S", "Na", "N"], ["So", "S", "Na", "N"]], a: 2,
+      x: ["සෝඩියම් = Na (ලතින් Natrium).", "Sodium = Na (from the Latin Natrium)."] },
+    { c: "chem", q: ["උදාසීන ද්‍රාවණයක pH අගය කීයද?", "The pH of a neutral solution is:"],
+      o: [["0", "7", "10", "14"], ["0", "7", "10", "14"]], a: 1,
+      x: ["pH 7 උදාසීනයි. 7ට අඩු අම්ලීය, 7ට වැඩි භාස්මික.", "pH 7 is neutral. Below 7 is acidic, above 7 is basic."] },
+    { c: "chem", q: ["පරමාණුක ක්‍රමාංකය යනු පරමාණුවක ඇති ______ ගණනයි.", "The atomic number is the number of ______ in an atom."],
+      o: [["නියුට්‍රෝන", "ප්‍රෝටෝන", "අණු", "බන්ධන"], ["neutrons", "protons", "molecules", "bonds"]], a: 1,
+      x: ["පරමාණුක ක්‍රමාංකය = න්‍යෂ්ටියේ ඇති ප්‍රෝටෝන ගණන.", "Atomic number = the number of protons in the nucleus."] },
+    { c: "chem", q: ["අම්ලයක් නිල් ලිට්මස් කඩදාසිය කුමන පාටට හරවයිද?", "An acid turns blue litmus paper:"],
+      o: [["රතු", "කොළ", "කහ", "නිල්ම පැහැයෙන් පවතී"], ["Red", "Green", "Yellow", "Stays blue"]], a: 0,
+      x: ["අම්ල නිල් ලිට්මස් රතු කරයි.", "Acids turn blue litmus red."] },
+    { c: "chem", q: ["පහත සඳහන් දේවලින් උච්ච වායුවක් (noble gas) කුමක්ද?", "Which of these is a noble gas?"],
+      o: [["හීලියම්", "ඔක්සිජන්", "හයිඩ්‍රජන්", "නයිට්‍රජන්"], ["Helium", "Oxygen", "Hydrogen", "Nitrogen"]], a: 0,
+      x: ["හීලියම් (He) උච්ච වායුවකි. එය බොහෝ දුරට ප්‍රතික්‍රියා නොකරයි.", "Helium (He) is a noble gas and hardly reacts with anything."] },
+    { c: "chem", q: ["මේස ලුණු වල රසායනික සූත්‍රය කුමක්ද?", "The chemical formula of table salt is:"],
+      o: [["NaOH", "KCl", "NaCl", "HCl"], ["NaOH", "KCl", "NaCl", "HCl"]], a: 2,
+      x: ["මේස ලුණු = සෝඩියම් ක්ලෝරයිඩ් (NaCl).", "Table salt is sodium chloride (NaCl)."] },
+
+    { c: "bio", q: ["ශාක ප්‍රභාසංශ්ලේෂණයේදී වාතයෙන් ගන්නා වායුව කුමක්ද?", "Which gas do plants take in for photosynthesis?"],
+      o: [["ඔක්සිජන්", "කාබන් ඩයොක්සයිඩ්", "නයිට්‍රජන්", "හයිඩ්‍රජන්"], ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"]], a: 1,
+      x: ["ශාක කාබන් ඩයොක්සයිඩ් සහ ජලය භාවිතා කර ආලෝකය යටතේ ආහාර සාදයි.", "Plants use carbon dioxide and water, with light, to make food."] },
+    { c: "bio", q: ["සෛලයේ \"බලාගාරය\" ලෙස හැඳින්වෙන්නේ කුමක්ද?", "Which part is called the \"powerhouse\" of the cell?"],
+      o: [["න්‍යෂ්ටිය", "මයිටොකොන්ඩ්‍රියාව", "රයිබසෝම", "සෛල බිත්තිය"], ["Nucleus", "Mitochondrion", "Ribosome", "Cell wall"]], a: 1,
+      x: ["මයිටොකොන්ඩ්‍රියාවේදී ශක්තිය (ATP) නිපදවේ.", "Mitochondria release energy (ATP) for the cell."] },
+    { c: "bio", q: ["ශාක ආහාර සාදා ගන්නා ක්‍රියාවලිය කුමක්ද?", "What is the process by which plants make their food?"],
+      o: [["ශ්වසනය", "ප්‍රභාසංශ්ලේෂණය", "ජීර්ණය", "උත්ස්වේදනය"], ["Respiration", "Photosynthesis", "Digestion", "Transpiration"]], a: 1,
+      x: ["ප්‍රභාසංශ්ලේෂණයේදී ආලෝක ශක්තිය භාවිතයෙන් ග්ලූකෝස් සාදයි.", "In photosynthesis plants use light energy to make glucose."] },
+    { c: "bio", q: ["රුධිරය පොම්ප කරන ඉන්ද්‍රියය කුමක්ද?", "Which organ pumps blood around the body?"],
+      o: [["පෙණහලු", "අක්මාව", "හදවත", "වකුගඩු"], ["Lungs", "Liver", "Heart", "Kidneys"]], a: 2,
+      x: ["හදවත රුධිරය සිරුරේ පුරා පොම්ප කරයි.", "The heart pumps blood through the body."] },
+    { c: "bio", q: ["වැඩිහිටි මිනිස් සිරුරේ ඇට ගණන ආසන්න වශයෙන් කීයද?", "How many bones does an adult human body have?"],
+      o: [["106", "206", "306", "406"], ["106", "206", "306", "406"]], a: 1,
+      x: ["වැඩිහිටියෙකුට ඇට 206ක් ඇත.", "An adult has 206 bones."] },
+    { c: "bio", q: ["ඔක්සිජන් ප්‍රවාහනය කරන්නේ කුමන රුධිර සෛලවලින්ද?", "Which blood cells carry oxygen?"],
+      o: [["රතු රුධිර සෛල", "සුදු රුධිර සෛල", "පට්ටිකා", "ප්ලාස්මාව"], ["Red blood cells", "White blood cells", "Platelets", "Plasma"]], a: 0,
+      x: ["රතු රුධිර සෛලවල ඇති හිමොග්ලොබින් ඔක්සිජන් ගෙන යයි.", "Haemoglobin in red blood cells carries oxygen."] },
+    { c: "bio", q: ["හිරු එළියෙන් අපේ සිරුර නිපදවන විටමිනය කුමක්ද?", "Which vitamin does our skin make in sunlight?"],
+      o: [["විටමින් A", "විටමින් C", "විටමින් D", "විටමින් K"], ["Vitamin A", "Vitamin C", "Vitamin D", "Vitamin K"]], a: 2,
+      x: ["හිරු එළියෙන් සම විටමින් D නිපදවයි.", "Skin makes vitamin D in sunlight."] },
+    { c: "bio", q: ["ජීවයේ මූලික ඒකකය කුමක්ද?", "The basic unit of life is the:"],
+      o: [["පටකය", "සෛලය", "ඉන්ද්‍රියය", "පද්ධතිය"], ["Tissue", "Cell", "Organ", "System"]], a: 1,
+      x: ["සියලු ජීවීන් සෛලවලින් සෑදී ඇත.", "All living things are made of cells."] },
+    { c: "bio", q: ["ශාකයක ජලය උරා ගන්නේ කුමන කොටසින්ද?", "Which part of a plant absorbs water?"],
+      o: [["කොළ", "මුල්", "මල", "පලතුරු"], ["Leaves", "Roots", "Flowers", "Fruit"]], a: 1,
+      x: ["මුල් පසෙන් ජලය සහ ඛනිජ ලවණ උරා ගනී.", "Roots take in water and minerals from the soil."] }
+  ];
+
+  var FACTS = [
+    ["අකුණක් සූර්යයාගේ පෘෂ්ඨයට වඩා ආසන්න වශයෙන් 5 ගුණයක් උණුසුම්ය.", "A lightning bolt is roughly five times hotter than the surface of the Sun."],
+    ["සිකුරු ග්‍රහයාගේ එක දවසක් (භ්‍රමණය) එහි එක වර්ෂයකට (පරිභ්‍රමණය) වඩා දිගය.", "A day on Venus (one rotation) is longer than its year (one orbit)."],
+    ["සූර්යයාගේ ආලෝකය පෘථිවියට පැමිණීමට විනාඩි 8කට වැඩි කාලයක් ගත වේ.", "Sunlight takes a little over 8 minutes to reach the Earth."],
+    ["වෙල්ලෑවා (octopus) කෙනෙකුට හදවත් තුනක් ඇත.", "An octopus has three hearts."],
+    ["ජලය ශීතල වී අයිස් වන විට ප්‍රසාරණය වේ, ඒ නිසා අයිස් ජලයේ පාවේ.", "Water expands as it freezes, which is why ice floats."],
+    ["ශබ්දය වාතයට වඩා ජලයේ ආසන්න වශයෙන් 4 ගුණයක් වේගයෙන් ගමන් කරයි.", "Sound travels about four times faster in water than in air."],
+    ["මිනිසුන් දෙදෙනෙකුගේ DNA වලින් 99.9%ක්ම සමානය.", "Any two people share about 99.9% of their DNA."],
+    ["දියමන්ති සහ පැන්සල් ග්‍රැෆයිට් දෙකම සෑදී ඇත්තේ කාබන් වලිනි.", "Diamonds and pencil graphite are both made of carbon."],
+    ["මිනිස් හදවත දිනකට ආසන්න වශයෙන් 100,000 වතාවක් ස්පන්දනය වේ.", "A human heart beats roughly 100,000 times a day."],
+    ["මී පැණි කිසි කලෙක නරක් නොවන ආහාරයක් ලෙස සැලකේ.", "Honey is famous for almost never spoiling."]
+  ];
+
+  /* ----- storage (per student, on this device) ----- */
+  function uid() { var u = window.swlCurrentUser; return (u && u.uid) || "guest"; }
+  function key() { return "swl-game-" + uid(); }
+  function blank() { return { xp: 0, streak: 0, last: "", quizzes: 0, perfect: 0, dailyCount: 0, daily: "", badges: [] }; }
+  function load() { try { var g = JSON.parse(localStorage.getItem(key()) || "null"); return g ? Object.assign(blank(), g) : blank(); } catch (e) { return blank(); } }
+  function save(g) { try { localStorage.setItem(key(), JSON.stringify(g)); } catch (e) {} }
+  function lvl(xp) { return Math.floor(xp / 100) + 1; }
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function ymd(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function today() { return ymd(new Date()); }
+  function yesterday() { var d = new Date(); d.setDate(d.getDate() - 1); return ymd(d); }
+  function curStreak(g) { return (g.last === today() || g.last === yesterday()) ? g.streak : 0; }
+
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function shuffle(a, r) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  /* ----- achievement popups ----- */
+  function popup(emoji, small, big) {
+    var box = $("swlAch"); if (!box) return;
+    var it = h("div", "swlach-item");
+    it.appendChild(h("span", "e", emoji));
+    var t = h("div"); t.appendChild(h("small", "", small)); t.appendChild(h("b", "", big)); it.appendChild(t);
+    box.appendChild(it);
+    setTimeout(function () { it.classList.add("out"); setTimeout(function () { it.remove(); }, 420); }, 3600);
+  }
+
+  /* ----- page widgets ----- */
+  function renderStats(into) {
+    var g = load(), L = lang(), lv = lvl(g.xp), into_ = g.xp % 100;
+    into.innerHTML = "";
+    var c1 = h("div", "swlg-chip"); c1.appendChild(h("small", "", UI.level[L])); var b1 = h("b"); b1.textContent = "Lv " + lv; c1.appendChild(b1);
+    var bar = h("div", "swlg-bar"), fill = h("i"); bar.appendChild(fill); c1.appendChild(bar);
+    setTimeout(function () { fill.style.width = into_ + "%"; }, 60);
+    var c2 = h("div", "swlg-chip"); c2.appendChild(h("small", "", UI.xp[L])); var b2 = h("b"); b2.textContent = String(g.xp); c2.appendChild(b2);
+    var c3 = h("div", "swlg-chip"); c3.appendChild(h("small", "", UI.streak[L])); var b3 = h("b"); b3.textContent = "🔥 " + curStreak(g); c3.appendChild(b3);
+    var c4 = h("div", "swlg-chip"); c4.appendChild(h("small", "", UI.badges[L])); var b4 = h("b"); b4.textContent = "🏅 " + g.badges.length + "/" + BADGES.length; c4.appendChild(b4);
+    [c1, c2, c3, c4].forEach(function (c) { into.appendChild(c); });
+  }
+  function renderBadges(into) {
+    var g = load(), L = lang(); into.innerHTML = "";
+    BADGES.forEach(function (b) {
+      var on = g.badges.indexOf(b.id) >= 0, el = h("span", "swlg-badge" + (on ? " on" : ""));
+      el.appendChild(h("span", "", b.e)); el.appendChild(document.createTextNode(b[L])); into.appendChild(el);
+    });
+  }
+  function renderDailyCard() {
+    var g = load(), L = lang(), done = g.daily === today();
+    if ($("swlgDTitle")) $("swlgDTitle").textContent = UI.dTitle[L];
+    if ($("swlgDDesc")) $("swlgDDesc").textContent = UI.dDesc[L];
+    if ($("swlgDBtn")) $("swlgDBtn").textContent = done ? UI.dDone[L] : UI.dStart[L];
+    if ($("swlhDTitle")) $("swlhDTitle").textContent = UI.dTitle[L];
+    if ($("swlhDDesc")) $("swlhDDesc").textContent = UI.dDesc[L];
+    if ($("swlhDBtn")) $("swlhDBtn").textContent = done ? UI.dDone[L] : UI.dStart[L];
+  }
+  var factIdx = -1;
+  function renderFact(next) {
+    var L = lang();
+    if (factIdx < 0) { var d = new Date(); factIdx = (d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate()) % FACTS.length; }
+    if (next) factIdx = (factIdx + 1) % FACTS.length;
+    if ($("swlFactLbl")) $("swlFactLbl").textContent = UI.factT[L];
+    if ($("swlFactTxt")) $("swlFactTxt").textContent = FACTS[factIdx][L === "en" ? 1 : 0];
+    if ($("swlFactBtn")) $("swlFactBtn").textContent = UI.another[L];
+  }
+  function renderAll() {
+    if ($("swlgStats")) renderStats($("swlgStats"));
+    if ($("swlgBadges")) renderBadges($("swlgBadges"));
+    var qc = document.querySelector("#page-quiz .swlg-clickable .swlg-start"); if (qc) qc.textContent = UI.qStart[lang()];
+    renderDailyCard(); renderFact(false);
+    if ($("swlProfStats")) renderStats($("swlProfStats"));
+    if (run && $("swlQuiz").classList.contains("show")) renderRun();
+  }
+
+  /* ----- quiz overlay ----- */
+  var run = null, timer = null;
+  function buildOverlay() {
+    var o = h("div"); o.id = "swlQuiz"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true");
+    o.innerHTML = '<div class="swlq-card"><button type="button" class="swlq-x" id="swlqX" aria-label="Close">&#10005;</button>' +
+      '<div class="swlq-head"><span id="swlqMode"></span><span class="sp"></span><span id="swlqCount"></span></div>' +
+      '<div class="swlq-timer" id="swlqTimer"><div class="track"><i id="swlqBar"></i></div><b id="swlqNum"></b></div>' +
+      '<div id="swlqBody"></div></div>';
+    document.body.appendChild(o);
+    var ach = h("div"); ach.id = "swlAch"; document.body.appendChild(ach);
+    $("swlqX").addEventListener("click", closeQuiz);
+    o.addEventListener("click", function (e) { if (e.target === o) closeQuiz(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && o.classList.contains("show")) closeQuiz(); });
+  }
+  function closeQuiz() { clearInterval(timer); run = null; $("swlQuiz").classList.remove("show"); renderAll(); }
+
+  function start(mode) {
+    var list;
+    if (mode === "daily") {
+      var d = new Date(); var seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+      list = shuffle(Q, rng(seed)).slice(0, 5);
+    } else {
+      list = shuffle(Q, Math.random).slice(0, 10);
+    }
+    run = { mode: mode, list: list, i: 0, score: 0, picked: -1, perm: null, ended: false, deadline: mode === "daily" ? Date.now() + 60000 : 0, result: null };
+    prepQ();
+    $("swlQuiz").classList.add("show");
+    clearInterval(timer);
+    if (mode === "daily") { timer = setInterval(tick, 200); tick(); }
+    renderRun();
+  }
+  function prepQ() {
+    var q = run.list[run.i];
+    run.perm = shuffle([0, 1, 2, 3], Math.random);
+    run.correct = run.perm.indexOf(q.a);
+    run.picked = -1;
+  }
+  function tick() {
+    if (!run || run.mode !== "daily" || run.ended) return;
+    var left = Math.max(0, run.deadline - Date.now());
+    $("swlqBar").style.width = (left / 600) + "%";
+    $("swlqNum").textContent = Math.ceil(left / 1000) + "s";
+    if (left <= 0) finish(true);
+  }
+  function renderRun() {
+    if (!run) return;
+    var L = lang(), body = $("swlqBody"); $("swlqTimer").classList.toggle("on", run.mode === "daily" && !run.ended);
+    $("swlqMode").textContent = UI.mode[run.mode][L];
+    if (run.ended) { renderResult(); return; }
+    var q = run.list[run.i];
+    $("swlqCount").textContent = UI.q[L] + " " + (run.i + 1) + " / " + run.list.length;
+    body.innerHTML = "";
+    body.appendChild(h("span", "swlq-tag", UI.cat[q.c][L]));
+    body.appendChild(h("div", "swlq-q", q.q[L === "en" ? 1 : 0]));
+    var opts = h("div", "swlq-opts");
+    run.perm.forEach(function (orig, pos) {
+      var b = h("button", "swlq-opt", q.o[L === "en" ? 1 : 0][orig]); b.type = "button";
+      if (run.picked >= 0) {
+        b.disabled = true;
+        if (pos === run.correct) b.classList.add("right");
+        else if (pos === run.picked) b.classList.add("wrong");
+      }
+      b.addEventListener("click", function () { answer(pos); });
+      opts.appendChild(b);
+    });
+    body.appendChild(opts);
+    if (run.picked >= 0) {
+      var ok = run.picked === run.correct, ex = h("div", "swlq-exp"); ex.appendChild(h("b", "", ok ? UI.right[L] : UI.wrong[L]));
+      ex.appendChild(document.createTextNode(q.x[L === "en" ? 1 : 0])); body.appendChild(ex);
+      var nx = h("div", "swlq-next"), btn = h("button", "swlg-btn", run.i + 1 >= run.list.length ? UI.results[L] : UI.next[L]); btn.type = "button";
+      btn.addEventListener("click", function () { if (run.i + 1 >= run.list.length) finish(false); else { run.i++; prepQ(); renderRun(); } });
+      nx.appendChild(btn); body.appendChild(nx);
+    }
+  }
+  function answer(pos) {
+    if (!run || run.picked >= 0 || run.ended) return;
+    run.picked = pos;
+    if (pos === run.correct) run.score++;
+    renderRun();
+  }
+
+  function finish(timeUp) {
+    if (!run || run.ended) return;
+    clearInterval(timer);
+    var n = run.list.length, s = run.score, perfect = s === n;
+    var g = load(), oldLv = lvl(g.xp), td = today(), xp = s * 10, notes = [];
+    if (perfect) { xp += 20; notes.push(UI.perfect[lang()]); }
+    var firstDaily = run.mode === "daily" && g.daily !== td;
+    if (firstDaily) { xp += 25; g.daily = td; g.dailyCount++; notes.push(UI.dBonus[lang()]); }
+    g.xp += xp; g.quizzes++; if (perfect) g.perfect++;
+    if (g.last !== td) { g.streak = (g.last === yesterday()) ? g.streak + 1 : 1; g.last = td; }
+    var newLv = lvl(g.xp), got = [];
+    var checks = { first: g.quizzes >= 1, perfect: g.perfect >= 1, daily: g.dailyCount >= 1, streak3: g.streak >= 3, streak7: g.streak >= 7, master: g.quizzes >= 10, lv3: newLv >= 3, lv5: newLv >= 5 };
+    BADGES.forEach(function (b) { if (checks[b.id] && g.badges.indexOf(b.id) < 0) { g.badges.push(b.id); got.push(b); } });
+    save(g);
+    run.ended = true; run.result = { n: n, s: s, xp: xp, notes: notes, timeUp: !!timeUp, up: newLv > oldLv ? newLv : 0, got: got };
+    renderRun(); renderAll();
+    got.forEach(function (b, i) { setTimeout(function () { popup(b.e, UI.newb[lang()], b[lang()]); }, 700 + i * 900); });
+  }
+  function renderResult() {
+    var L = lang(), r = run.result, body = $("swlqBody"); $("swlqCount").textContent = "";
+    body.innerHTML = "";
+    var box = h("div", "swlq-res");
+    box.appendChild(h("div", "big", r.s === r.n ? "🏆" : r.s >= r.n / 2 ? "🎉" : "💪"));
+    box.appendChild(h("h3", "", r.timeUp ? UI.timeup[L] : (r.s === r.n ? UI.great[L] : r.s >= r.n / 2 ? UI.good[L] : UI.keep[L])));
+    box.appendChild(h("div", "score", r.s + " / " + r.n));
+    box.appendChild(h("div", "xp", "+" + r.xp + " " + UI.gained[L] + (r.notes.length ? "  ·  " + r.notes.join("  ·  ") : "")));
+    if (r.up) { box.appendChild(h("div", "lvl", "⭐ " + UI.lvlup[L] + " — Lv " + r.up)); burst(box); }
+    if (r.got.length) {
+      var nb = h("div", "newb"); r.got.forEach(function (b) { var e = h("span", "swlg-badge on"); e.appendChild(h("span", "", b.e)); e.appendChild(document.createTextNode(b[L])); nb.appendChild(e); }); box.appendChild(nb);
+    }
+    var acts = h("div", "acts");
+    var again = h("button", "swlg-btn", UI.again[L]); again.type = "button"; again.addEventListener("click", function () { start(run.mode); });
+    var cl = h("button", "swlg-btn ghost", UI.close[L]); cl.type = "button"; cl.addEventListener("click", closeQuiz);
+    acts.appendChild(again); acts.appendChild(cl); box.appendChild(acts);
+    body.appendChild(box);
+  }
+  function burst(box) {
+    var em = ["⭐", "✨", "🎉", "🧪", "⚛️", "🚀"];
+    for (var i = 0; i < 14; i++) {
+      var p = h("span", "swlq-burst", em[i % em.length]), a = (Math.PI * 2 * i) / 14, d = 70 + Math.random() * 60;
+      p.style.setProperty("--dx", Math.round(Math.cos(a) * d) + "px"); p.style.setProperty("--dy", Math.round(Math.sin(a) * d - 20) + "px");
+      p.style.animationDelay = (i % 4) * 60 + "ms"; box.appendChild(p);
+    }
+  }
+
+  /* ----- inject into the page ----- */
+  function init() {
+    buildOverlay();
+    var quiz = $("page-quiz");
+    if (quiz) {
+      var head = quiz.querySelector(".section-header");
+      var wrap = h("div", "swlg-wrap");
+      wrap.innerHTML = '<div class="swlg-stats" id="swlgStats"></div>' +
+        '<div class="swlg-daily"><span class="ico">⚡</span><div class="txt"><h3 id="swlgDTitle"></h3><p id="swlgDDesc"></p></div><button type="button" class="swlg-btn" id="swlgDBtn"></button></div>' +
+        '<div class="swlg-badges" id="swlgBadges"></div>';
+      if (head) head.insertAdjacentElement("afterend", wrap); else quiz.appendChild(wrap);
+      $("swlgDBtn").addEventListener("click", function () { start("daily"); });
+      var first = quiz.querySelector(".cards-grid .card-tile");
+      if (first) { first.classList.add("swlg-clickable"); first.appendChild(h("span", "swlg-start", UI.qStart[lang()])); first.addEventListener("click", function () { start("quick"); }); }
+    }
+    var pages = document.querySelector("#page- .cards-grid");
+    var sec = pages && pages.closest("section");
+    if (sec) {
+      var home = h("div", "swlg-home");
+      home.innerHTML = '<div class="swlg-fact"><div class="lbl" id="swlFactLbl"></div><p id="swlFactTxt"></p><button type="button" class="swlg-btn ghost" id="swlFactBtn"></button></div>' +
+        '<div class="swlg-daily"><span class="ico">⚡</span><div class="txt"><h3 id="swlhDTitle"></h3><p id="swlhDDesc"></p></div><button type="button" class="swlg-btn" id="swlhDBtn"></button></div>';
+      sec.parentNode.insertBefore(home, sec);
+      $("swlFactBtn").addEventListener("click", function () { renderFact(true); });
+      $("swlhDBtn").addEventListener("click", function () { if (typeof navigate === "function") navigate("/quiz"); start("daily"); });
+    }
+    renderAll();
+    new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+    window.addEventListener("swl-user", renderAll);
+  }
+
+  window.swlGame = {
+    renderProfile: function (el) { renderStats(el); },
+    start: start,
+    _q: Q, _cur: function () { return run && run.list ? { correct: run.correct, n: run.list.length, i: run.i } : null; }
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();
+</script>
 
 <script>
 /* Profile: photo + science object + hotline */
@@ -2254,6 +2720,7 @@ setLang(initialLang);
     $('swlProfCallText').appendChild(a); $('swlProfCallText').appendChild(n);
     $('swlProfMsg').textContent = '';
     buildGrid();
+    if (window.swlGame) window.swlGame.renderProfile($('swlProfStats'));
     $('swlProfile').classList.add('show');
   }
   function close() { $('swlProfile').classList.remove('show'); }
